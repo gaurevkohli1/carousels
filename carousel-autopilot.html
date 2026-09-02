@@ -1,0 +1,664 @@
+<title>Carousel Autopilot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+
+<style>
+:root{
+  --paper:#F1F2EE;
+  --surface:#FBFBF9;
+  --ink:#141C24;
+  --ink-soft:#4A5560;
+  --ink-faint:#6E7883;
+  --rule:#D6D9D2;
+  --rule-soft:#E4E6E0;
+  --accent:#1E6F63;
+  --accent-soft:#DCE9E5;
+  --signal:#A8500C;
+  --signal-soft:#F3E5D5;
+  --crit:#8E2F2F;
+  --crit-soft:#F1DFDF;
+  --shadow:0 1px 0 rgba(20,28,36,.05);
+
+  --f-display:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;
+  --f-body:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0F1418;
+    --surface:#161D23;
+    --ink:#E6E9E4;
+    --ink-soft:#A6AFB6;
+    --ink-faint:#7E888F;
+    --rule:#2A343B;
+    --rule-soft:#212A31;
+    --accent:#5FB8A6;
+    --accent-soft:#152A28;
+    --signal:#DE9147;
+    --signal-soft:#2C2118;
+    --crit:#D97A7A;
+    --crit-soft:#2C1B1B;
+    --shadow:0 1px 0 rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0F1418;
+  --surface:#161D23;
+  --ink:#E6E9E4;
+  --ink-soft:#A6AFB6;
+  --ink-faint:#7E888F;
+  --rule:#2A343B;
+  --rule-soft:#212A31;
+  --accent:#5FB8A6;
+  --accent-soft:#152A28;
+  --signal:#DE9147;
+  --signal-soft:#2C2118;
+  --crit:#D97A7A;
+  --crit-soft:#2C1B1B;
+  --shadow:0 1px 0 rgba(0,0,0,.3);
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--f-body);
+  font-size:17px;
+  line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1080px;margin:0 auto;padding:0 28px 96px}
+
+/* ---------- masthead ---------- */
+.masthead{padding:56px 0 34px;border-bottom:2px solid var(--ink)}
+.kicker{
+  font-family:var(--f-mono);font-size:11px;font-weight:500;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--accent);
+  display:flex;flex-wrap:wrap;gap:10px;align-items:center;
+}
+.kicker .dot{color:var(--rule)}
+h1{
+  font-family:var(--f-display);
+  font-weight:800;
+  font-size:clamp(2.6rem,7vw,4.6rem);
+  line-height:.96;
+  letter-spacing:-.03em;
+  margin:.24em 0 .18em;
+  text-wrap:balance;
+}
+.standfirst{
+  font-size:clamp(1.06rem,2.1vw,1.32rem);
+  line-height:1.5;
+  color:var(--ink-soft);
+  max-width:38ch;
+  margin:0;
+}
+.provenance{
+  margin-top:30px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+  gap:2px;
+  background:var(--rule);
+  border:1px solid var(--rule);
+}
+.provenance div{background:var(--paper);padding:11px 14px}
+.provenance dt{
+  font-family:var(--f-mono);font-size:10px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--ink-faint);margin:0 0 3px;
+}
+.provenance dd{margin:0;font-size:14.5px;line-height:1.35}
+
+/* ---------- section scaffolding ---------- */
+section{padding-top:58px}
+.sec-head{
+  display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:baseline;
+  border-bottom:1px solid var(--rule);padding-bottom:10px;margin-bottom:26px;
+}
+.sec-num{
+  font-family:var(--f-mono);font-size:12px;font-weight:600;
+  color:var(--accent);letter-spacing:.08em;
+}
+h2{
+  font-family:var(--f-display);font-weight:700;
+  font-size:clamp(1.5rem,3.4vw,2.1rem);letter-spacing:-.02em;
+  margin:0;line-height:1.1;text-wrap:balance;
+}
+h3{
+  font-family:var(--f-display);font-weight:700;
+  font-size:1.16rem;letter-spacing:-.01em;margin:34px 0 8px;line-height:1.25;
+}
+h4{
+  font-family:var(--f-mono);font-weight:600;font-size:11.5px;
+  letter-spacing:.13em;text-transform:uppercase;color:var(--ink-faint);
+  margin:26px 0 8px;
+}
+p{max-width:66ch;margin:0 0 15px}
+.lede{font-size:1.06rem;color:var(--ink-soft)}
+a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:2px}
+a:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+strong{font-weight:600}
+em{font-style:italic}
+code{
+  font-family:var(--f-mono);font-size:.86em;
+  background:var(--rule-soft);padding:1px 5px;border-radius:2px;
+  word-break:break-word;
+}
+
+/* ---------- pipeline strip ---------- */
+.pipeline{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:2px;
+  background:var(--rule);border:1px solid var(--rule);margin:6px 0 26px;
+}
+.stage{background:var(--surface);padding:15px 16px 17px}
+.stage .n{
+  font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-faint);
+}
+.stage .t{
+  font-family:var(--f-display);font-weight:700;font-size:1.18rem;
+  margin:3px 0 5px;letter-spacing:-.01em;
+}
+.stage p{font-size:13.5px;line-height:1.45;color:var(--ink-soft);margin:0;max-width:none}
+@media(max-width:720px){.pipeline{grid-template-columns:repeat(2,1fr)}}
+
+/* ---------- tables ---------- */
+.tscroll{overflow-x:auto;margin:16px 0 8px;border:1px solid var(--rule)}
+table{border-collapse:collapse;width:100%;min-width:600px;background:var(--surface)}
+th{
+  font-family:var(--f-mono);font-size:10.5px;font-weight:600;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink-faint);text-align:left;
+  padding:10px 14px;border-bottom:1px solid var(--rule);vertical-align:bottom;
+}
+td{
+  padding:12px 14px;border-bottom:1px solid var(--rule-soft);
+  font-size:15px;line-height:1.45;vertical-align:top;
+}
+tbody tr:last-child td{border-bottom:none}
+td.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-size:14px;text-align:right;white-space:nowrap}
+th.num{text-align:right}
+td.lbl{font-family:var(--f-mono);font-size:12.5px;color:var(--ink-soft);white-space:nowrap}
+
+.chip{
+  display:inline-block;font-family:var(--f-mono);font-size:10px;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;padding:2px 7px;
+  border:1px solid currentColor;white-space:nowrap;
+}
+.chip.crit{color:var(--crit);background:var(--crit-soft)}
+.chip.warn{color:var(--signal);background:var(--signal-soft)}
+.chip.ok{color:var(--accent);background:var(--accent-soft)}
+
+/* ---------- code ---------- */
+pre{
+  font-family:var(--f-mono);font-size:12.8px;line-height:1.62;
+  background:var(--surface);border:1px solid var(--rule);
+  border-left:3px solid var(--accent);
+  padding:15px 17px;overflow-x:auto;margin:14px 0 6px;
+  color:var(--ink);
+}
+pre .c{color:var(--ink-faint)}
+figcaption{
+  font-family:var(--f-mono);font-size:11px;color:var(--ink-faint);
+  margin:0 0 20px;letter-spacing:.03em;
+}
+figure{margin:0}
+
+/* ---------- phase blocks ---------- */
+.phase{
+  display:grid;grid-template-columns:112px 1fr;gap:26px;
+  padding:26px 0;border-top:1px solid var(--rule-soft);
+}
+.phase:first-of-type{border-top:1px solid var(--rule)}
+.phase-rail{
+  font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-faint);line-height:1.5;
+  padding-top:5px;
+}
+.phase-rail b{
+  display:block;font-family:var(--f-display);font-weight:800;
+  font-size:2.1rem;letter-spacing:-.02em;color:var(--accent);
+  line-height:1;margin-bottom:5px;font-variant-numeric:tabular-nums;
+}
+.phase h3{margin-top:0}
+.phase p:last-child{margin-bottom:0}
+@media(max-width:680px){
+  .phase{grid-template-columns:1fr;gap:8px}
+  .phase-rail{display:flex;align-items:baseline;gap:10px;padding-top:0}
+  .phase-rail b{font-size:1.5rem;margin-bottom:0}
+}
+
+/* ---------- ranked improvements ---------- */
+.rank{border-top:1px solid var(--rule);margin-top:6px}
+.rank details{border-bottom:1px solid var(--rule-soft)}
+.rank summary{
+  display:grid;grid-template-columns:38px 1fr auto;gap:14px;align-items:baseline;
+  padding:14px 4px;cursor:pointer;list-style:none;
+}
+.rank summary::-webkit-details-marker{display:none}
+.rank summary:hover .rt{color:var(--accent)}
+.rn{
+  font-family:var(--f-mono);font-size:12px;font-weight:600;
+  color:var(--ink-faint);font-variant-numeric:tabular-nums;
+}
+.rt{font-family:var(--f-display);font-weight:700;font-size:1.05rem;letter-spacing:-.01em;line-height:1.3}
+.rt span{
+  display:block;font-family:var(--f-body);font-weight:400;font-size:14.5px;
+  color:var(--ink-soft);letter-spacing:0;margin-top:2px;line-height:1.4;
+}
+.rank .body{padding:0 4px 20px 56px}
+.rank .body p{font-size:15.5px;margin-bottom:11px}
+.rank .body p:last-child{margin-bottom:0}
+@media(max-width:620px){
+  .rank summary{grid-template-columns:28px 1fr;gap:10px}
+  .rank summary .chip{grid-column:2;justify-self:start;margin-top:6px}
+  .rank .body{padding-left:38px}
+}
+
+/* ---------- callout ---------- */
+.note{
+  border:1px solid var(--rule);border-left:3px solid var(--signal);
+  background:var(--surface);padding:16px 18px;margin:20px 0;
+}
+.note h4{margin-top:0;color:var(--signal)}
+.note p{margin-bottom:0;font-size:15.5px}
+
+ul,ol{max-width:66ch;padding-left:1.2em;margin:0 0 15px}
+li{margin-bottom:7px}
+li::marker{color:var(--ink-faint)}
+
+footer{
+  margin-top:64px;padding-top:20px;border-top:2px solid var(--ink);
+  font-family:var(--f-mono);font-size:11.5px;color:var(--ink-faint);
+  letter-spacing:.04em;line-height:1.7;
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="wrap">
+
+<header class="masthead">
+  <div class="kicker">
+    <span>Build plan</span><span class="dot">/</span>
+    <span>Instagram + Facebook</span><span class="dot">/</span>
+    <span>Claude-native</span>
+  </div>
+  <h1>Carousel<br>Autopilot</h1>
+  <p class="standfirst">A rebuild of the Full Automation Playbook — with its four real defects fixed, Facebook added, and the slide text moved out of the image model.</p>
+
+  <dl class="provenance">
+    <div><dt>Source analysed</dt><dd>The Full Automation Playbook, 74&nbsp;pp., full text</dd></div>
+    <div><dt>Video lesson</dt><dd>Blocked by this session's network proxy — not reviewed</dd></div>
+    <div><dt>API facts</dt><dd>Re-verified against Meta docs, Sept&nbsp;2026</dd></div>
+    <div><dt>Model layer</dt><dd>Claude Opus&nbsp;5 · Haiku&nbsp;4.5 · deterministic render</dd></div>
+  </dl>
+</header>
+
+<section id="what">
+  <div class="sec-head"><span class="sec-num">01</span><h2>What the playbook actually builds</h2></div>
+
+  <p class="lede">Strip the sales pages and the 39-page prompt appendix, and roughly 30 pages of real system remains. It is sound, and the architecture is worth keeping.</p>
+
+  <div class="pipeline">
+    <div class="stage"><div class="n">Layer 1</div><div class="t">Sense</div><p>Pull trends from IG hashtags, YouTube Data API, X v2. Score by <code>(likes + 3·comments + 5·shares) / reach</code>. Keep the top 15–20%, drop anything over 48h old.</p></div>
+    <div class="stage"><div class="n">Layer 2</div><div class="t">Think</div><p>GPT writes caption + hooks as JSON. Claude expands that into one image prompt per slide, all sharing a fixed "visual DNA" block.</p></div>
+    <div class="stage"><div class="n">Layer 3</div><div class="t">Make</div><p><code>generate.py</code> loops the prompt list through an image API in a 3-worker pool, writes a <code>.prompt.txt</code> beside every PNG.</p></div>
+    <div class="stage"><div class="n">Layer 4</div><div class="t">Ship</div><p>Meta Graph API publish at a randomised time inside a daily window; ManyChat or a native webhook turns keyword comments into DMs.</p></div>
+  </div>
+
+  <p>Three files per dated folder — <code>content.py</code> (filename/prompt tuples), <code>generate.py</code> (batch render), <code>build_pdfs.py</code> (the same content as a PDF) — copied rather than abstracted, twenty-plus times. The claimed result is @zero.canon_ passing 10k followers in under 30 days with no manual posting.</p>
+
+  <h4>What genuinely earns a place in your build</h4>
+  <ul>
+    <li><strong>The four-layer split.</strong> Sense / Think / Make / Ship are independently replaceable. That is the right decomposition and you should keep the names.</li>
+    <li><strong>Reach-normalised engagement scoring.</strong> Weighting comments and shares above likes, then dividing by reach, is correct: it lets a small account's high-rate post outrank a big account's loud one.</li>
+    <li><strong>One frozen style constant, repeated per slide.</strong> Consistency across a 10-slide carousel comes from repetition, not from one longer prompt. This is the single best idea in the document.</li>
+    <li><strong>A saved prompt beside every rendered asset.</strong> Cheap, and it is the difference between debugging a bad slide in one minute versus thirty.</li>
+    <li><strong>Batch, not daemon.</strong> One scheduled run a day. Continuous polling buys nothing — trends do not move hourly.</li>
+    <li><strong>Randomised posting slot.</strong> A fixed 09:00:00 every day is the most legible automation signature there is.</li>
+  </ul>
+</section>
+
+<section id="gaps">
+  <div class="sec-head"><span class="sec-num">02</span><h2>Where it is wrong, stale, or silent</h2></div>
+
+  <p class="lede">Six findings. The first three will each stop a first build dead, and none of them are mentioned anywhere in the 74 pages.</p>
+
+  <div class="tscroll">
+  <table>
+    <thead><tr><th>Severity</th><th>Finding</th><th>What is actually true</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><span class="chip crit">Blocker</span></td>
+        <td><strong>It never shows how to publish a carousel.</strong> Section 13 teaches the two-call single-image flow only.</td>
+        <td>A carousel is a <em>three</em>-call flow: one child container per slide with <code>is_carousel_item=true</code>, then a parent container with <code>media_type=CAROUSEL</code> and a <code>children</code> list, then publish the parent. Max 10 slides via the API (the app allows 20). Every container expires after 24h.</td>
+      </tr>
+      <tr>
+        <td><span class="chip crit">Blocker</span></td>
+        <td><strong>Nothing says where the PNGs are hosted.</strong> The pipeline writes files to a local folder, then the publish call passes <code>image_url</code>.</td>
+        <td>Meta fetches that URL from its own servers. Local paths, <code>file://</code>, and private buckets all fail. You need a public HTTPS URL — S3/R2 with public read, or Cloudinary. And Instagram wants <strong>JPEG</strong>: the playbook's whole pipeline emits PNG.</td>
+      </tr>
+      <tr>
+        <td><span class="chip crit">Blocker</span></td>
+        <td><strong>Facebook is absent.</strong> The word appears only as "the Page you must link to Instagram."</td>
+        <td>Page posting is a different flow: upload each photo to <code>/{page-id}/photos</code> with <code>published=false</code>, then POST <code>/{page-id}/feed</code> with an <code>attached_media</code> array of <code>media_fbid</code> values. Different token (Page token), different scopes (<code>pages_manage_posts</code>, <code>pages_read_engagement</code>), same 24h expiry on the unpublished photos.</td>
+      </tr>
+      <tr>
+        <td><span class="chip warn">Stale</span></td>
+        <td>"A hard cap of 50 published posts per account per 24 hours."</td>
+        <td>The content-publishing limit is <strong>100</strong> per rolling 24h, enforced at <code>media_publish</code>, not at container creation. A carousel counts as one.</td>
+      </tr>
+      <tr>
+        <td><span class="chip warn">Overstated</span></td>
+        <td>"App Review commonly takes 2–4 weeks and is the biggest bottleneck — put it in week one."</td>
+        <td>Advanced Access exists to serve <em>other people's</em> accounts. To publish to accounts that hold a role on your own app — which is your case — Standard Access is normally enough. Confirm in App Dashboard → App Review → Permissions before you plan a month around it.</td>
+      </tr>
+      <tr>
+        <td><span class="chip warn">Design</span></td>
+        <td>Headlines, body copy, footers and slide counters are all <em>drawn</em> by an image model.</td>
+        <td>Its own production prompts beg — "Perfect spelling, no garbled glyphs", "NO lorem ipsum" — which is the tell. You cannot version a brand this way, cannot fix a typo without a re-roll, and pay per attempt. Section 04 below replaces it.</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h4>Two smaller ones</h4>
+  <p><strong>Two vendors for one voice.</strong> GPT writes the caption, Claude writes the slide prompts. Nothing requires the split, and it guarantees the caption and the slides drift apart in tone. One model, one call, one object.</p>
+  <p><strong>The loop never closes.</strong> Sense reads the whole internet and never reads <em>your own account</em>. Post 200 times and the ranking function is exactly as smart as on day one. That is the difference between automation and a compounding system.</p>
+</section>
+
+<section id="build">
+  <div class="sec-head"><span class="sec-num">03</span><h2>The build, in eight phases</h2></div>
+
+  <p class="lede">Same four layers, Claude-native, both platforms, deterministic rendering. Phases 0–3 are a weekend; 4–5 are a second weekend; 6–7 are what makes it improve on its own.</p>
+
+  <div class="phase">
+    <div class="phase-rail"><b>00</b>Accounts<br>&amp; tokens</div>
+    <div>
+      <h3>Get the account chain and a token that does not expire</h3>
+      <p>Instagram account → Professional (Business). Facebook Page → linked to it. Meta app of type Business at <code>developers.facebook.com</code>, with Instagram Graph API added. Verify in Graph API Explorer that <code>/me/accounts?fields=instagram_business_account</code> returns your IG user ID before writing a line of code.</p>
+      <p>Then skip the playbook's 60-day-token treadmill entirely. In Meta Business Suite, create a <strong>System User</strong>, assign it the Page and IG asset, and generate a token with <code>instagram_business_content_publish</code>, <code>pages_manage_posts</code>, <code>pages_read_engagement</code>, <code>instagram_manage_comments</code>. System user tokens do not expire. The playbook's single most common silent-failure mode — "an expired token is why your job quietly stopped posting" — stops existing.</p>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-rail"><b>01</b>Brand<br>kernel</div>
+    <div>
+      <h3>Write the brand once, as data</h3>
+      <p>One <code>brand/kernel.md</code> (voice, audience, what you will and will not claim, three worked example captions) and one <code>brand/tokens.json</code> (hex values, type scale, safe margins, logo rules, slide dimensions). Everything downstream — the Claude system prompt, the slide CSS, the QA linter — reads from these two files and nowhere else.</p>
+      <p>This is the playbook's "shared visual DNA" idea, promoted from a string pasted inside a Python file to the actual source of truth. Change the accent hex in one place and the next drop is on-brand end to end.</p>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-rail"><b>02</b>Sense</div>
+    <div>
+      <h3>Read your own account before you read the internet</h3>
+      <p>Keep their scoring formula and their dated raw-JSON cache. Add one source they never mention: <code>/{ig-user-id}/media?fields=caption,like_count,comments_count,insights.metric(reach,saved,shares)</code>. Your last 60 posts, pulled nightly into <code>data/history.jsonl</code>.</p>
+      <p>Start with YouTube (free 10k-unit daily quota) and your own insights. Add X only once the account is earning — the v2 Basic tier is a real subscription for a marginal signal.</p>
+      <p>Normalise everything to one shape before scoring — <code>{platform, topic, url, likes, comments, shares, reach, published_at}</code> — so the ranking function never branches on source.</p>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-rail"><b>03</b>Think</div>
+    <div>
+      <h3>One Claude call returns the entire post</h3>
+      <p>Not a caption call and a prompt call. One call, one validated object: hook, 8–10 slides each with headline / body / optional visual brief, caption, first comment, hashtags, alt text per slide, and a Facebook variant of the caption. Structured output means it either validates or it fails loudly — no regex over a paragraph.</p>
+      <figure>
+<pre><span class="c"># think/plan.py — one brief in, one whole post out</span>
+resp = client.messages.create(
+    model="claude-opus-5",
+    max_tokens=16000,
+    thinking={"type": "adaptive"},
+    system=[{
+        "type": "text",
+        "text": BRAND_KERNEL + TOKENS_JSON + LAST_20_WINNERS,
+        "cache_control": {"type": "ephemeral"},   <span class="c"># frozen prefix → cached</span>
+    }],
+    output_config={"format": POST_PLAN_SCHEMA},   <span class="c"># or messages.parse()</span>
+    messages=[{"role": "user", "content": todays_brief}],
+)</pre>
+      <figcaption>Check <code>messages.parse()</code> in your SDK version for the typed variant.</figcaption>
+      </figure>
+      <p>The kernel + tokens + winners block is identical on every run, so it sits before the cache breakpoint and the volatile brief goes after it. Watch <code>usage.cache_read_input_tokens</code> — if it stays at zero, something in your "frozen" prefix is not frozen, and a timestamp is the usual culprit.</p>
+      <p>Route by difficulty: Opus 5 writes the post; Haiku 4.5 does the cheap mechanical passes (dedupe checks, hashtag hygiene, alt text). Do not pay flagship rates for classification.</p>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-rail"><b>04</b>Make</div>
+    <div>
+      <h3>Render the slides in HTML, screenshot them, and never ask a model to spell</h3>
+      <p>This is the change that does the most work. A slide is an HTML template reading <code>brand/tokens.json</code>; Playwright loads it at 1080×1350 and screenshots to JPEG. Real fonts, real kerning, exact hex, perfect spelling, identical footer on every slide, deterministic and free.</p>
+      <figure>
+<pre>page = browser.new_page(viewport={"width":1080,"height":1350},
+                        device_scale_factor=2)
+for i, slide in enumerate(plan.slides, 1):
+    page.goto(f"file://{tmpl}?data={quote(slide.json())}")
+    page.wait_for_load_state("networkidle")     <span class="c"># fonts settled</span>
+    page.screenshot(path=f"out/{i:02d}.jpg", type="jpeg", quality=92)</pre>
+      <figcaption>1080×1350 is 4:5 — the tallest ratio Instagram allows, so the most feed real estate.</figcaption>
+      </figure>
+      <p>The image model keeps a real job, just a smaller one: <em>backgrounds and hero objects</em>, generated once per drop and composited behind the HTML text layer as a CSS background. Textures and product shots are what diffusion is good at. Typography is not.</p>
+      <p>Second-order wins that fall out of this for free: a slide costs nothing to re-render after a copy fix; the same template exports 1080×1920 for Stories and 1080×1080 for a Facebook square by changing the viewport; and your carousel can contain a real chart or a real code block, which no image model will ever render correctly.</p>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-rail"><b>05</b>Ship</div>
+    <div>
+      <h3>Upload once, publish twice</h3>
+      <p>Push the JPEGs to a public bucket (R2 or S3, public-read, one prefix per drop). Then Instagram — three calls — and Facebook — two.</p>
+      <figure>
+<pre><span class="c"># Instagram carousel — 10 slides max</span>
+children = [POST(f"{G}/{IG}/media", {
+    "image_url": u, "is_carousel_item": "true",
+    "access_token": TOK})["id"] for u in urls[:10]]
+
+parent = POST(f"{G}/{IG}/media", {
+    "media_type": "CAROUSEL",
+    "children": ",".join(children),
+    "caption": plan.caption, "access_token": TOK})["id"]
+
+POST(f"{G}/{IG}/media_publish",
+     {"creation_id": parent, "access_token": TOK})
+
+<span class="c"># Facebook Page — same JPEGs, different dance</span>
+fbids = [POST(f"{G}/{PAGE}/photos", {
+    "url": u, "published": "false",
+    "access_token": PAGE_TOK})["id"] for u in urls]
+
+POST(f"{G}/{PAGE}/feed", {
+    "message": plan.caption_fb,
+    "attached_media": json.dumps(
+        [{"media_fbid": i} for i in fbids]),
+    "access_token": PAGE_TOK})</pre>
+      <figcaption>Poll the parent container's <code>status_code</code> until <code>FINISHED</code> before publishing video. Containers die at 24h.</figcaption>
+      </figure>
+      <p>Keep their randomised slot — a uniform offset inside a 07:00–21:00 window, seeded separately per account — and add an idempotency key per drop so a retry can never double-post.</p>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-rail"><b>06</b>Gate</div>
+    <div>
+      <h3>One human keystroke, and a linter that does not need one</h3>
+      <p>Before anything publishes, run a deterministic check: spelling, banned claims, character budget per slide (does the headline overflow its box at the rendered size?), hex values matching tokens, hashtag count, alt text present, topic not posted in the trailing 45 days. Fail closed.</p>
+      <p>Then, for the first month, a review queue — the rendered JPEGs and the caption pushed to yourself, approve or reject. The playbook's premise is zero human touches from day one; that is how a brand ships something embarrassing at 3am. Drop the gate to spot-checks once the linter has caught nothing for two weeks.</p>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-rail"><b>07</b>Learn</div>
+    <div>
+      <h3>Feed results back into the brief</h3>
+      <p>72 hours after each post, pull its insights and append the result to <code>data/history.jsonl</code>: hook text, format, topic, slide count, publish hour, saves, shares, reach, follows. Every subsequent Think call receives your top 20 and bottom 5 as part of the cached prefix, labelled.</p>
+      <p>This is the only part of the system that compounds. Everything else is throughput.</p>
+    </div>
+  </div>
+</section>
+
+<section id="better">
+  <div class="sec-head"><span class="sec-num">04</span><h2>The improvements, ranked by what they return</h2></div>
+
+  <p class="lede">Ordered by leverage, not effort. The top four are where the multiple actually lives — the rest are the difference between a system that runs and one you can leave alone.</p>
+
+  <div class="rank">
+    <details open>
+      <summary><span class="rn">01</span><span class="rt">Move typography out of the image model<span>HTML template + Playwright screenshot instead of diffusion-drawn text</span></span><span class="chip ok">Highest</span></summary>
+      <div class="body">
+        <p>Perfect spelling by construction. Pixel-identical branding across every slide of every drop. A copy fix costs a re-render, not a re-roll and a new charge. Charts, tables and code blocks become possible slide content. Near-zero marginal cost per slide, versus per-image API pricing.</p>
+        <p>It also kills the failure mode the playbook itself flags as unfixable — that a general image model drifts on product accuracy across a batch — without buying the subscription it recommends as the workaround.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary><span class="rn">02</span><span class="rt">Close the loop on your own analytics<span>Rank tomorrow's ideas using what your audience actually saved and shared</span></span><span class="chip ok">Highest</span></summary>
+      <div class="body">
+        <p>The playbook optimises for what is trending globally. You want what converts <em>for you</em>. Track per post: hook pattern, topic cluster, slide count, publish hour, saves, shares, profile visits, follows. After 30 posts you can rank hooks by realised save-rate instead of by guess; after 90 the ranking is genuinely yours and cannot be copied by anyone reading the same playbook.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary><span class="rn">03</span><span class="rt">One story object, many outputs<span>Fan out from a single Think pass instead of re-prompting per format</span></span><span class="chip ok">High</span></summary>
+      <div class="body">
+        <p>The expensive step is deciding what to say. Once you have the post plan, the marginal cost of a Facebook variant, a 1080×1920 Story cut, a Reel cover, a LinkedIn version and a newsletter section is a different template and a different viewport — no extra reasoning. The playbook writes one post for one platform per day. Same spend, five surfaces.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary><span class="rn">04</span><span class="rt">Cache the kernel, batch the backlog<span>Prompt caching on the frozen prefix; Batch API for anything not needed today</span></span><span class="chip ok">High</span></summary>
+      <div class="body">
+        <p>Your brand kernel, tokens and winners block are identical on every call and are the bulk of the input. Behind a cache breakpoint they are read at a fraction of input price. Separately, anything generated ahead of schedule — a 30-post evergreen backfill, a month of variants — goes through the Batch API at 50% of standard cost, since nothing needs a same-second response.</p>
+        <p>Combined with Haiku 4.5 on the mechanical passes, the Think layer lands at a few dollars a month rather than a few tens.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary><span class="rn">05</span><span class="rt">A brand linter that fails closed<span>Deterministic checks before publish, not model self-assessment</span></span><span class="chip warn">Medium</span></summary>
+      <div class="body">
+        <p>Spelling, banned claims, per-slide character budget against the rendered box, hex conformance to tokens, hashtag count, alt text present, no topic repeat inside 45 days. Written as ordinary code with tests, not as "please check your work" in a prompt. A model asked to grade itself will pass itself.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary><span class="rn">06</span><span class="rt">Semantic dedupe, not string dedupe<span>Embed every shipped topic; block on similarity, not on exact match</span></span><span class="chip warn">Medium</span></summary>
+      <div class="body">
+        <p>The playbook skips a topic already posted in the trailing 14 days. "AI agents for founders" and "how founders should use AI agents" are different strings and the same post. Embed each shipped topic into a local vector file and block anything above a similarity threshold. Fourteen days is also too short — 45 is closer to when an audience forgets.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary><span class="rn">07</span><span class="rt">A hook bank with recorded outcomes<span>Generate five, ship one, log which pattern won</span></span><span class="chip warn">Medium</span></summary>
+      <div class="body">
+        <p>The playbook already asks for three alternative hooks and then discards two. Keep them. Tag each by pattern — contrarian, numbered, question, result-first, mistake — ship the highest-ranked, and record the outcome against the pattern. Within two months you know which openings your audience stops for, which is the highest-value fact the whole system can learn.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary><span class="rn">08</span><span class="rt">A post is a state machine, not a log line<span>draft → approved → uploaded → containers_created → published → measured</span></span><span class="chip warn">Medium</span></summary>
+      <div class="body">
+        <p>"Log every publish attempt" tells you what broke; it does not stop the damage. One row per drop with an explicit status, an idempotency key, and the container IDs, means a crashed run resumes exactly where it stopped and a retry after a timeout cannot post twice. Containers expire at 24h — the state machine is what notices.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary><span class="rn">09</span><span class="rt">A non-expiring token and a daily health check<span>System User token, plus a cheap call that proves it still works</span></span><span class="chip warn">Medium</span></summary>
+      <div class="body">
+        <p>Removes the playbook's own nominated failure mode. Keep the health check anyway — a permission can be revoked, an asset can be unassigned, a Page role can change. One <code>GET /me</code> a day and an alert on failure beats discovering it a week later.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary><span class="rn">10</span><span class="rt">An evergreen re-render engine<span>Your top 10% of posts, re-cut with new visuals, on a 60-day cycle</span></span><span class="chip warn">Medium</span></summary>
+      <div class="body">
+        <p>Because slides are templates and text is data, a winning post from two months ago re-renders into a new visual treatment for the cost of a screenshot. Almost none of your audience saw the original — reach on any single post is a small fraction of followers. This is free inventory that only exists once rendering is deterministic.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary><span class="rn">11</span><span class="rt">Reply generation with a human in the loop<span>Draft comment replies; never auto-DM outside the policy window</span></span><span class="chip warn">Medium</span></summary>
+      <div class="body">
+        <p>Comment-to-DM is where accounts get restricted, and the playbook is thin on it. Keep keyword-triggered delivery strictly inside Meta's messaging window, do not send unsolicited DMs at volume, and have Claude <em>draft</em> replies to real comments for one-tap approval rather than posting them unread. Early conversations are worth more than early throughput.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary><span class="rn">12</span><span class="rt">Run it as one repo with tests, not twenty copied folders<span>A library plus dated data, instead of a copied three-file pattern</span></span><span class="chip warn">Low</span></summary>
+      <div class="body">
+        <p>Copy-a-folder-per-drop is honest and it works to about twenty. Past that, a bug fixed in <code>generate.py</code> exists in one of twenty-three copies. Move the pipeline into <code>src/</code> with tests; keep dated folders for <em>data</em> — brief, plan JSON, rendered slides, publish receipt, measured results. You keep the auditability and drop the duplication.</p>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section id="cost">
+  <div class="sec-head"><span class="sec-num">05</span><h2>What it costs to run</h2></div>
+
+  <p class="lede">One post a day to both platforms. The playbook estimates $50–150/month; most of that is the image API and the tools that exist to make the image API behave.</p>
+
+  <div class="tscroll">
+  <table>
+    <thead><tr><th>Layer</th><th>Choice</th><th class="num">Per month</th><th>Note</th></tr></thead>
+    <tbody>
+      <tr><td class="lbl">Sense</td><td>YouTube Data API + own IG insights</td><td class="num">$0</td><td>10k units/day free quota is ample; X v2 Basic only if it earns its place</td></tr>
+      <tr><td class="lbl">Think</td><td>Claude Opus 5, cached kernel</td><td class="num">$3–8</td><td>~$5/MTok in, $25/MTok out; the kernel is cached, so most input is not charged at full rate</td></tr>
+      <tr><td class="lbl">Think (aux)</td><td>Claude Haiku 4.5</td><td class="num">&lt;$1</td><td>Dedupe, alt text, hashtag hygiene — $1/$5 per MTok</td></tr>
+      <tr><td class="lbl">Make</td><td>Playwright render</td><td class="num">$0</td><td>Local or a free CI runner; Chromium does the work</td></tr>
+      <tr><td class="lbl">Make (opt.)</td><td>Generated backgrounds</td><td class="num">$2–10</td><td>One or two per drop, not ten — most slides need no generated art</td></tr>
+      <tr><td class="lbl">Hosting</td><td>Cloudflare R2 or S3</td><td class="num">$0–1</td><td>A few hundred JPEGs a month sits inside free tiers</td></tr>
+      <tr><td class="lbl">Ship</td><td>Meta Graph API</td><td class="num">$0</td><td>Free; 100 published posts per rolling 24h</td></tr>
+      <tr><td class="lbl">Compute</td><td>GitHub Actions cron</td><td class="num">$0</td><td>Public repo minutes are free; a private repo's free tier covers a daily job</td></tr>
+      <tr><td class="lbl">DMs</td><td>Native webhook, or ManyChat</td><td class="num">$0–25</td><td>Self-host the webhook if you already run a server for anything else</td></tr>
+    </tbody>
+    <tfoot><tr><td class="lbl"><strong>Total</strong></td><td></td><td class="num"><strong>$5–45</strong></td><td>Against $50–150 for the playbook's stack</td></tr></tfoot>
+  </table>
+  </div>
+  <p style="font-size:14px;color:var(--ink-faint);max-width:66ch">Claude prices as of this writing; check current rates before committing to a volume. The saving is not the point — the point is that the cheaper path is also the one that spells correctly.</p>
+</section>
+
+<section id="rollout">
+  <div class="sec-head"><span class="sec-num">06</span><h2>Fourteen days, not thirty</h2></div>
+
+  <p class="lede">The playbook's month is mostly waiting on an App Review you probably do not need. Removing that assumption halves the calendar.</p>
+
+  <div class="tscroll">
+  <table>
+    <thead><tr><th class="num">Days</th><th>Do</th><th>Done when</th></tr></thead>
+    <tbody>
+      <tr><td class="num">1–2</td><td>Account chain, Meta app, System User token, permission check</td><td>Graph API Explorer returns your IG user ID and Page ID with one token</td></tr>
+      <tr><td class="num">3–4</td><td>Brand kernel + tokens.json; slide HTML template; Playwright render</td><td>Ten on-brand JPEGs from a hand-written JSON file, at 1080×1350</td></tr>
+      <tr><td class="num">5–6</td><td>Bucket upload; the IG three-call and FB two-call publishers</td><td>One real carousel live on both platforms, published from the terminal</td></tr>
+      <tr><td class="num">7–8</td><td>Think layer: Claude structured output, cached prefix, model routing</td><td><code>python run.py --topic "..."</code> produces a complete validated post plan</td></tr>
+      <tr><td class="num">9–10</td><td>Sense: YouTube pull, own-insights pull, scoring, semantic dedupe</td><td>A ranked shortlist you agree with three mornings running</td></tr>
+      <tr><td class="num">11–12</td><td>Linter, review queue, state machine, idempotency, health check</td><td>A deliberately broken run fails closed and resumes cleanly</td></tr>
+      <tr><td class="num">13–14</td><td>Cron with randomised slot; the 72h measurement job</td><td>Two consecutive days publish with you asleep, and results land in history.jsonl</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h4>Repo shape</h4>
+<pre>src/
+  sense/    pull.py  score.py  dedupe.py
+  think/    plan.py  schema.py  prompts/
+  make/     render.py  template/slide.html  template/slide.css
+  ship/     instagram.py  facebook.py  scheduler.py  state.py
+  learn/    measure.py  history.py
+brand/      kernel.md  tokens.json
+drops/
+  2026-09-02/  brief.json  plan.json  slides/  receipt.json  results.json
+tests/      test_linter.py  test_state.py  test_render.py
+.github/workflows/daily.yml</pre>
+  <figcaption>Code lives once in <code>src/</code>; <code>drops/</code> keeps the playbook's dated-folder auditability for data only.</figcaption>
+
+  <div class="note">
+    <h4>Two things to keep in view</h4>
+    <p>Publishing through the Graph API is the sanctioned route and is not the risk — automated DMs at volume are. Stay inside Meta's messaging window, keep delivery keyword-triggered, and treat the reply loop as the part of this system that can cost you the account. Separately: an account that posts daily and never answers a comment reads as automated to humans long before it does to a platform. Budget ten minutes a day for the replies; it is the only manual step worth keeping.</p>
+  </div>
+</section>
+
+<footer>
+  Built from a full read of The Full Automation Playbook (74 pp.) · Meta Graph API behaviour re-verified September 2026 · The promptbase.shop video lesson was unreachable from this session and is not reflected here
+</footer>
+
+</div>
