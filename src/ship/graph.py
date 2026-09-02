@@ -12,7 +12,15 @@ import time
 import requests
 
 VERSION = os.environ.get("GRAPH_VERSION", "v23.0")
-BASE = f"https://graph.facebook.com/{VERSION}"
+
+
+def base_url() -> str:
+    """Graph API root. GRAPH_BASE_URL points the client at a fake server so the
+    full publish path can be exercised without touching a real account."""
+    override = os.environ.get("GRAPH_BASE_URL")
+    if override:
+        return override.rstrip("/")
+    return f"https://graph.facebook.com/{os.environ.get('GRAPH_VERSION', VERSION)}"
 
 # Retry only what is worth retrying. A 400 means the request is wrong and will
 # stay wrong; retrying it burns the hourly call budget for nothing.
@@ -38,7 +46,7 @@ class GraphError(RuntimeError):
 
 
 def _request(method: str, path: str, token: str, **params) -> dict:
-    url = f"{BASE}/{path.lstrip('/')}"
+    url = f"{base_url()}/{path.lstrip('/')}"
     payload = {k: v for k, v in params.items() if v is not None}
     payload["access_token"] = token
 

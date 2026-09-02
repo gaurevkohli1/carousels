@@ -83,5 +83,28 @@ Instagram publishing uses your user/system-user token; Facebook Page publishing
 needs the Page's own token, which `graph.page_token()` exchanges for you.
 Mixing the two is the usual cause of a bare `(#200) Permissions error`.
 
+### Rehearsing a publish
+
+```bash
+python3 scripts/rehearse.py drops/2026-09-02
+```
+
+Renders the drop and runs the real publisher against a local stand-in Graph API,
+printing every HTTP call. No credentials, no account, nothing published — but
+real HTTP, real form bodies, and the real state machine. Check a drop here
+before pointing it at Instagram.
+
+`GRAPH_BASE_URL` is what makes this possible: set it and the client talks to the
+stand-in instead of graph.facebook.com. Leave it unset in production.
+
+### Going live
+
+Fill in `.env` (see `.env.example`), then:
+
+```bash
+python3 -m src.ship.publish drops/2026-09-02 --dry-run   # last look
+python3 -m src.ship.publish drops/2026-09-02 --only ig   # one platform first
+```
+
 Next: `src/think/` — one Claude call that produces `plan.json` — then
 `src/learn/` to feed results back into the next brief.
