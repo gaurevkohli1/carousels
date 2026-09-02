@@ -1,0 +1,13 @@
+# Generated assets: rendered slides and review sheets are reproducible from
+# plan.json + tokens.json, so they never enter git.
+drops/*/slides/
+!drops/*/slides/render.json
+
+# Vendored fonts — reproduce with: python3 brand/fonts/fetch.py
+brand/fonts/*.ttf
+
+# Secrets. Never commit a real one.
+.env
+.venv/
+__pycache__/
+*.pyc

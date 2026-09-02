@@ -1,0 +1,88 @@
+{
+  "topic": "why first-attempt instagram automations fail",
+  "hook_pattern": "mistake",
+  "caption": "Most people build the posting bot before they build the thing that makes a post worth publishing. Five failures I'd fix in this order. Which one got you? 👇",
+  "caption_fb": "Most people build the posting bot before they build the thing that makes a post worth publishing. Here are the five failures worth fixing first — in order.",
+  "first_comment": "The carousel publish flow trips up almost everyone: it's three API calls, not two.",
+  "hashtags": ["#buildinpublic", "#automation", "#contentstrategy", "#instagramgrowth"],
+  "slides": [
+    {
+      "type": "cover",
+      "theme": "ink",
+      "kicker": "Field notes",
+      "headline": "5 ways your first Instagram automation dies",
+      "subhead": "Every one of these is a *silent* failure. The job keeps running. Nothing gets posted.",
+      "alt": "Cover slide reading: 5 ways your first Instagram automation dies"
+    },
+    {
+      "type": "point",
+      "theme": "paper",
+      "number": 1,
+      "headline": "You wrote the two-call publish flow",
+      "body": "A single image is two calls. A *carousel is three* — one child container per slide, then a parent, then publish. Miss it and you ship one lonely slide.",
+      "alt": "Slide 1: the carousel publish flow is three API calls, not two"
+    },
+    {
+      "type": "point",
+      "theme": "paper",
+      "number": 2,
+      "headline": "Your images live on your laptop",
+      "body": "Meta fetches image_url from *its* servers, not yours. Local paths fail. So do private buckets. And Instagram wants JPEG — most pipelines emit PNG.",
+      "alt": "Slide 2: images must be publicly reachable JPEGs"
+    },
+    {
+      "type": "stat",
+      "theme": "ink",
+      "kicker": "The real ceiling",
+      "value": "100",
+      "headline": "posts per rolling 24 hours",
+      "body": "Enforced at publish, not at container creation. A carousel counts as one. Most guides still quote the old number.",
+      "alt": "Slide 3: the publishing limit is 100 posts per rolling 24 hours"
+    },
+    {
+      "type": "point",
+      "theme": "paper",
+      "number": 3,
+      "headline": "The token quietly expired",
+      "body": "A 60-day token means a 60-day timer on your whole system. Use a Business Manager *system user* token instead — it doesn't expire.",
+      "alt": "Slide 4: use a non-expiring system user token"
+    },
+    {
+      "type": "point",
+      "theme": "paper",
+      "number": 4,
+      "headline": "You asked a model to spell",
+      "body": "Image models draw letters, they don't set type. Render slides in HTML and screenshot them: *perfect spelling*, exact brand colour, free re-renders.",
+      "alt": "Slide 5: render slide text in HTML rather than generating it"
+    },
+    {
+      "type": "list",
+      "theme": "ink",
+      "headline": "The order I'd build it in",
+      "items": [
+        "Account chain and a token that never expires",
+        "Brand tokens — one file everything reads",
+        "Slide template, rendered and screenshotted",
+        "Publish to both platforms from the terminal",
+        "Only then: let a model choose the topic"
+      ],
+      "alt": "Slide 6: recommended build order, five steps"
+    },
+    {
+      "type": "quote",
+      "theme": "paper",
+      "quote": "Automation is throughput. Measurement is the only part that compounds.",
+      "attribution": "The fifth failure",
+      "alt": "Slide 7: pull quote about measurement compounding"
+    },
+    {
+      "type": "cta",
+      "theme": "ink",
+      "kicker": "Full teardown",
+      "headline": "The whole build, eight phases",
+      "body": "Every API call, both platforms, and the twelve improvements that matter — written up in full.",
+      "action": "Comment BUILD",
+      "alt": "Final slide: comment BUILD for the full teardown"
+    }
+  ]
+}

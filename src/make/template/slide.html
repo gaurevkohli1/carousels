@@ -1,0 +1,252 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>slide</title>
+<style>
+  /* Font files are vendored under brand/fonts/ — see brand/fonts/fetch.py.
+     Local files mean the render is byte-identical on any machine and works offline. */
+  @font-face{font-family:Display;src:url(../../../brand/fonts/BricolageGrotesque-700.ttf) format("truetype");font-weight:700}
+  @font-face{font-family:Display;src:url(../../../brand/fonts/BricolageGrotesque-800.ttf) format("truetype");font-weight:800}
+  @font-face{font-family:Body;src:url(../../../brand/fonts/Archivo-400.ttf) format("truetype");font-weight:400}
+  @font-face{font-family:Body;src:url(../../../brand/fonts/Archivo-500.ttf) format("truetype");font-weight:500}
+  @font-face{font-family:Body;src:url(../../../brand/fonts/Archivo-600.ttf) format("truetype");font-weight:600}
+  @font-face{font-family:Body;src:url(../../../brand/fonts/Archivo-700.ttf) format("truetype");font-weight:700}
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#000}
+
+  #slide{
+    position:relative;overflow:hidden;
+    background:var(--bg);color:var(--ink);
+    font-family:Body,system-ui,sans-serif;
+    display:flex;flex-direction:column;
+  }
+
+  /* Optional generated art sits behind the text layer. Diffusion is good at
+     texture and hero objects; it is not good at letters. */
+  #art{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0}
+  #scrim{position:absolute;inset:0;opacity:0}
+
+  #body{position:relative;flex:1;display:flex;flex-direction:column;min-height:0}
+  #foot{position:relative;display:flex;justify-content:space-between;align-items:baseline;
+        color:var(--ink_soft);flex:0 0 auto}
+
+  .label{font-weight:600;text-transform:uppercase;color:var(--accent)}
+  .rule{height:2px;background:var(--accent);flex:0 0 auto}
+
+  h1{font-family:Display,sans-serif;font-weight:800;text-wrap:balance}
+  h2{font-family:Display,sans-serif;font-weight:700;text-wrap:balance}
+  .stat{font-family:Display,sans-serif;font-weight:800;color:var(--accent);line-height:.86;
+        font-variant-numeric:tabular-nums}
+  .quote{font-family:Display,sans-serif;font-weight:700;text-wrap:balance}
+  .quote::before{content:"\201C";color:var(--accent)}
+  .quote::after{content:"\201D";color:var(--accent)}
+
+  p{color:var(--ink_soft)}
+  strong{color:var(--ink);font-weight:600}
+
+  ol.items{list-style:none;display:flex;flex-direction:column}
+  ol.items li{display:grid;grid-template-columns:auto 1fr;align-items:baseline}
+  ol.items .n{font-family:Display,sans-serif;font-weight:700;color:var(--accent);
+              font-variant-numeric:tabular-nums}
+
+  .idx{font-family:Display,sans-serif;font-weight:800;color:var(--accent);
+       line-height:.8;font-variant-numeric:tabular-nums}
+
+  .cta{display:inline-flex;align-items:center;border:2px solid var(--accent);
+       color:var(--accent);font-weight:600;align-self:flex-start}
+
+  .spacer{flex:1 1 auto;min-height:0}
+</style>
+</head>
+<body>
+<div id="slide"><div id="art"></div><div id="scrim"></div>
+  <div id="body"></div>
+  <div id="foot"><span id="foot-l"></span><span id="foot-r"></span></div>
+</div>
+
+<script>
+/* renderSlide(slide, ctx) is called once per slide by src/make/render.py via
+   page.evaluate(). The page loads once; fonts load once; each call repaints.
+   Returns a fit report so the renderer can fail loudly instead of shipping
+   a slide with clipped text. */
+
+let T = null;          // tokens.json
+let CANVAS = null;
+
+function px(n){ return n + "px"; }
+
+function applyTheme(name){
+  const t = T.themes[name] || T.themes[T.active_theme];
+  const s = document.getElementById("slide").style;
+  for (const [k, v] of Object.entries(t)) s.setProperty("--" + k, v);
+  return t;
+}
+
+/* Binary-search the largest font size in [min,max] at which the element still
+   fits its container. This is why copy length stops being a design problem:
+   a headline that runs long shrinks instead of overflowing. */
+function fitText(el, min, max, box){
+  let lo = min, hi = max, best = min;
+  while (lo <= hi){
+    const mid = Math.floor((lo + hi) / 2);
+    el.style.fontSize = px(mid);
+    if (el.scrollHeight <= box.clientHeight && box.scrollHeight <= box.clientHeight){
+      best = mid; lo = mid + 1;
+    } else {
+      hi = mid - 1;
+    }
+  }
+  el.style.fontSize = px(best);
+  return best;
+}
+
+function esc(s){
+  return String(s == null ? "" : s)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+/* Inline emphasis: *word* -> <strong>word</strong>, applied after escaping. */
+function rich(s){
+  return esc(s).replace(/\*([^*]+)\*/g, "<strong>$1</strong>");
+}
+
+function renderSlide(slide, ctx){
+  T = ctx.tokens;
+  CANVAS = T.canvas;
+  const S = T.scale, TY = T.type, M = CANVAS.margin;
+
+  const root = document.getElementById("slide");
+  root.style.width  = px(CANVAS.width);
+  root.style.height = px(CANVAS.height);
+  root.style.padding = px(M);
+
+  const theme = applyTheme(slide.theme || T.active_theme);
+
+  // background art layer
+  const art = document.getElementById("art");
+  const scrim = document.getElementById("scrim");
+  if (slide.art){
+    art.style.backgroundImage = "url('" + slide.art + "')";
+    art.style.opacity = 1;
+    scrim.style.background =
+      "linear-gradient(180deg, " + theme.bg + "CC 0%, " + theme.bg + "F2 100%)";
+    scrim.style.opacity = 1;
+  } else {
+    art.style.opacity = 0; scrim.style.opacity = 0;
+  }
+
+  const body = document.getElementById("body");
+  body.style.gap = px(Math.round(M * 0.42));
+
+  const foot = document.getElementById("foot");
+  foot.style.fontSize = px(S.footer);
+  foot.style.letterSpacing = TY.tracking_label;
+  foot.style.textTransform = "uppercase";
+  foot.style.fontWeight = 500;
+  foot.style.paddingTop = px(Math.round(M * 0.4));
+  document.getElementById("foot-l").textContent =
+    slide.footer_left != null ? slide.footer_left : T.brand.handle;
+  document.getElementById("foot-r").textContent =
+    ctx.total ? String(ctx.index).padStart(2,"0") + " / " + String(ctx.total).padStart(2,"0") : "";
+
+  const kind = slide.type || "point";
+  const parts = [];
+
+  const label = (txt) => txt
+    ? `<div class="label" style="font-size:${S.label}px;letter-spacing:${TY.tracking_label}">${esc(txt)}</div>`
+    : "";
+  const bodyText = (txt, size) => txt
+    ? `<p style="font-size:${size || S.body}px;line-height:${TY.leading_body}">${rich(txt)}</p>`
+    : "";
+
+  if (kind === "cover"){
+    parts.push(label(slide.kicker));
+    parts.push(`<h1 id="fit" style="letter-spacing:${TY.tracking_display};line-height:${TY.leading_display}">${esc(slide.headline)}</h1>`);
+    parts.push(`<div class="spacer"></div>`);
+    if (slide.subhead) parts.push(bodyText(slide.subhead));
+    parts.push(`<div class="rule" style="width:${Math.round(CANVAS.width*0.22)}px"></div>`);
+  }
+
+  else if (kind === "point"){
+    // Number at the top, copy anchored to the bottom — the empty middle is the
+    // composition, not a gap left by short copy.
+    if (ctx.index != null) parts.push(`<div class="idx" style="font-size:${Math.round(S.headline_max*0.8)}px">${String(slide.number != null ? slide.number : ctx.index - 1).padStart(2,"0")}</div>`);
+    parts.push(`<div class="spacer"></div>`);
+    parts.push(`<h2 id="fit" style="letter-spacing:${TY.tracking_display};line-height:${TY.leading_display}">${esc(slide.headline)}</h2>`);
+    parts.push(bodyText(slide.body));
+  }
+
+  else if (kind === "stat"){
+    parts.push(label(slide.kicker));
+    parts.push(`<div class="spacer"></div>`);
+    parts.push(`<div class="stat" id="fit" style="letter-spacing:${TY.tracking_display}">${esc(slide.value)}</div>`);
+    parts.push(`<h2 style="font-size:${S.headline_min}px;letter-spacing:${TY.tracking_display};line-height:1.05">${esc(slide.headline)}</h2>`);
+    parts.push(bodyText(slide.body, S.body_small));
+    parts.push(`<div class="spacer"></div>`);
+  }
+
+  else if (kind === "list"){
+    parts.push(`<h2 id="fit" style="letter-spacing:${TY.tracking_display};line-height:${TY.leading_display}">${esc(slide.headline)}</h2>`);
+    const gap = Math.round(M * 0.3);
+    const items = (slide.items || []).map((it, i) =>
+      `<li style="gap:${Math.round(M*0.28)}px"><span class="n" style="font-size:${S.body}px">${String(i+1).padStart(2,"0")}</span><span style="font-size:${S.body}px;line-height:1.35">${rich(it)}</span></li>`
+    ).join("");
+    parts.push(`<ol class="items" style="gap:${gap}px">${items}</ol>`);
+    parts.push(`<div class="spacer"></div>`);
+  }
+
+  else if (kind === "quote"){
+    parts.push(`<div class="spacer"></div>`);
+    parts.push(`<div class="quote" id="fit" style="letter-spacing:${TY.tracking_display};line-height:1.08">${esc(slide.quote)}</div>`);
+    if (slide.attribution) parts.push(label(slide.attribution));
+    parts.push(`<div class="spacer"></div>`);
+  }
+
+  else if (kind === "cta"){
+    parts.push(label(slide.kicker));
+    parts.push(`<div class="spacer"></div>`);
+    parts.push(`<h1 id="fit" style="letter-spacing:${TY.tracking_display};line-height:${TY.leading_display}">${esc(slide.headline)}</h1>`);
+    parts.push(bodyText(slide.body));
+    if (slide.action) parts.push(
+      `<div class="cta" style="font-size:${S.body_small}px;padding:${Math.round(M*0.22)}px ${Math.round(M*0.34)}px;letter-spacing:${TY.tracking_label};text-transform:uppercase">${esc(slide.action)}</div>`);
+    parts.push(`<div class="spacer"></div>`);
+  }
+
+  else {
+    throw new Error("unknown slide type: " + kind);
+  }
+
+  body.innerHTML = parts.join("");
+
+  // Auto-fit the hero element for this slide type.
+  const fitEl = document.getElementById("fit");
+  let size = null;
+  if (fitEl){
+    const range = {
+      cover: [S.cover_min, S.cover_max],
+      cta:   [S.cover_min, S.cover_max],
+      stat:  [S.stat_min,  S.stat_max],
+      point: [S.headline_min, S.headline_max],
+      list:  [S.headline_min, S.headline_max],
+      quote: [S.headline_min, S.headline_max],
+    }[kind];
+    size = fitText(fitEl, range[0], range[1], body);
+  }
+
+  // Fit report — the renderer treats overflow as a hard failure.
+  const overflow = Math.max(0, body.scrollHeight - body.clientHeight);
+  return {
+    type: kind,
+    fitted_size: size,
+    overflow_px: overflow,
+    at_min_size: !!(fitEl && size !== null && size === ({
+      cover:S.cover_min, cta:S.cover_min, stat:S.stat_min,
+      point:S.headline_min, list:S.headline_min, quote:S.headline_min}[kind])),
+    ok: overflow === 0,
+  };
+}
+</script>
+</body>
+</html>
