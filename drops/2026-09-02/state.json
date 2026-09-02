@@ -1,0 +1,25 @@
+{
+  "drop": "2026-09-02",
+  "state": "rendered",
+  "history": [
+    {
+      "state": "rendered",
+      "at": "2026-09-02T18:22:11+00:00"
+    }
+  ],
+  "receipts": {
+    "rendered": {
+      "slides": [
+        "01_cover.jpg",
+        "02_point.jpg",
+        "03_point.jpg",
+        "04_stat.jpg",
+        "05_point.jpg",
+        "06_point.jpg",
+        "07_list.jpg",
+        "08_quote.jpg",
+        "09_cta.jpg"
+      ]
+    }
+  }
+}

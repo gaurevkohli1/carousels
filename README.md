@@ -52,5 +52,36 @@ instead of downloading a second copy.
 | `drops/<date>/plan.json` | One day's post: slides, caption, hashtags, alt text |
 | `tests/` | Fit, determinism, and publishability checks |
 
-Next: `src/think/` (one Claude call producing the plan) and `src/ship/`
-(the Instagram three-call and Facebook two-call publishers).
+## Ship layer (built)
+
+```bash
+python3 -m src.ship.publish drops/2026-09-02 --dry-run   # prints every API call
+python3 -m src.ship.publish drops/2026-09-02             # publishes to both
+python3 -m src.ship.publish drops/2026-09-02 --only ig
+```
+
+Instagram's three-call carousel flow and Facebook's two-call multi-photo flow,
+behind one command. Guards that fire before any call is made: the 10-slide API
+cap, the 2200-character caption limit, and non-https image URLs (Meta fetches
+them from its own servers, so a local path fails).
+
+Each drop carries a `state.json` moving through
+`draft -> rendered -> uploaded -> ig_published -> fb_published -> measured`.
+Every transition is written immediately, so a crashed run resumes where it
+stopped and re-running a published drop posts nothing.
+
+| Path | Role |
+|---|---|
+| `src/ship/graph.py` | Graph client: retries only what is retryable, surfaces code/subcode/trace |
+| `src/ship/instagram.py` | Child containers -> CAROUSEL parent -> publish, plus first comment |
+| `src/ship/facebook.py` | Unpublished photos -> feed post with `attached_media` |
+| `src/ship/assets.py` | Slides to a public HTTPS URL (S3-compatible, or already-hosted) |
+| `src/ship/state.py` | Per-drop state machine; makes retries safe |
+| `src/ship/publish.py` | The orchestrator and its `--dry-run` |
+
+Instagram publishing uses your user/system-user token; Facebook Page publishing
+needs the Page's own token, which `graph.page_token()` exchanges for you.
+Mixing the two is the usual cause of a bare `(#200) Permissions error`.
+
+Next: `src/think/` — one Claude call that produces `plan.json` — then
+`src/learn/` to feed results back into the next brief.
