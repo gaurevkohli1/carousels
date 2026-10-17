@@ -25,6 +25,7 @@ from playwright.sync_api import sync_playwright
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 TEMPLATE = ROOT / "src" / "make" / "template" / "slide.html"
 TOKENS = ROOT / "brand" / "tokens.json"
+DESIGNS = ROOT / "brand" / "designs"
 FONT_DIR = ROOT / "brand" / "fonts"
 
 # Instagram accepts up to 10 slides in an API-published carousel.
@@ -46,8 +47,21 @@ class RenderError(RuntimeError):
     pass
 
 
-def load_tokens(theme: str | None = None) -> dict:
-    tokens = json.loads(TOKENS.read_text())
+def list_designs() -> list[str]:
+    return sorted(p.stem for p in DESIGNS.glob("*.json"))
+
+
+def load_tokens(theme: str | None = None, design: str | None = None) -> dict:
+    """Load a design system. `design` picks a file from brand/designs/."""
+    if design:
+        path = DESIGNS / f"{design}.json"
+        if not path.exists():
+            raise RenderError(
+                f"unknown design {design!r}; available: " + ", ".join(list_designs())
+            )
+    else:
+        path = TOKENS
+    tokens = json.loads(path.read_text())
     if theme:
         if theme not in tokens["themes"]:
             raise RenderError(
@@ -67,9 +81,10 @@ def check_fonts() -> None:
 
 
 def render(plan_path: pathlib.Path, out_dir: pathlib.Path | None = None,
-           theme: str | None = None, strict: bool = True) -> dict:
+           theme: str | None = None, strict: bool = True,
+           design: str | None = None) -> dict:
     check_fonts()
-    tokens = load_tokens(theme)
+    tokens = load_tokens(theme, design)
     plan_path = plan_path.resolve()
     plan = json.loads(plan_path.read_text())
     slides = plan["slides"]
@@ -88,6 +103,7 @@ def render(plan_path: pathlib.Path, out_dir: pathlib.Path | None = None,
     canvas = tokens["canvas"]
     manifest = {
         "plan": str(plan_path.relative_to(ROOT)) if plan_path.is_relative_to(ROOT) else str(plan_path),
+        "design": tokens.get("name", "default"),
         "theme": tokens["active_theme"],
         "canvas": f"{canvas['width']}x{canvas['height']}@{canvas['scale']}x",
         "slides": [],
@@ -179,7 +195,9 @@ def main() -> int:
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("plan", type=pathlib.Path, help="path to a plan.json")
     ap.add_argument("--out", type=pathlib.Path, default=None)
-    ap.add_argument("--theme", default=None, help="override tokens.json active_theme")
+    ap.add_argument("--theme", default=None, help="override the design's active_theme")
+    ap.add_argument("--design", default=None,
+                    help="a design system from brand/designs/ (e.g. pantry, afterhours)")
     ap.add_argument("--sheet", action="store_true",
                     help="also write a single contact sheet for review")
     ap.add_argument("--allow-overflow", action="store_true",
@@ -187,12 +205,13 @@ def main() -> int:
     args = ap.parse_args()
 
     try:
-        manifest = render(args.plan, args.out, args.theme, strict=not args.allow_overflow)
+        manifest = render(args.plan, args.out, args.theme,
+                          strict=not args.allow_overflow, design=args.design)
         out = args.out or args.plan.parent / "slides"
         print(f"\n{len(manifest['slides'])} slides -> {out}/  ({manifest['canvas']}, "
-              f"{manifest['theme']} theme)")
+              f"{manifest['design']} / {manifest['theme']})")
         if args.sheet:
-            print(f"contact sheet -> {contact_sheet(out, load_tokens(args.theme))}")
+            print(f"contact sheet -> {contact_sheet(out, load_tokens(args.theme, args.design))}")
     except RenderError as exc:
         print(f"\nrender failed: {exc}", file=sys.stderr)
         return 1

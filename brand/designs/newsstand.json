@@ -1,0 +1,21 @@
+{
+  "name": "Newsstand",
+  "blurb": "Loud and trend-led. Near-white ground, vermillion accent, heavy grotesque. Magazine-cover energy for drops and trends.",
+  "brand": { "handle": "@yourhandle", "site": "" },
+  "canvas": { "width": 1080, "height": 1350, "scale": 2, "margin": 88, "format": "jpeg", "quality": 92 },
+  "type": {
+    "display_family": "Bricolage", "display_weight": 800,
+    "body_family": "Archivo",
+    "tracking_display": "-0.035em", "tracking_label": "0.14em",
+    "leading_display": 0.9, "leading_body": 1.45
+  },
+  "scale": {
+    "cover_max": 142, "cover_min": 76, "headline_max": 98, "headline_min": 54,
+    "stat_max": 310, "stat_min": 150, "body": 37, "body_small": 32, "label": 22, "footer": 21
+  },
+  "active_theme": "paper",
+  "themes": {
+    "paper": { "bg": "#F7F5F2", "surface": "#ECE9E4", "ink": "#111111", "ink_soft": "#6B6B6B", "accent": "#E5402D", "rule": "#DCD8D2" },
+    "ink":   { "bg": "#111111", "surface": "#1B1B1B", "ink": "#F7F5F2", "ink_soft": "#8E8E8E", "accent": "#FF5A44", "rule": "#2A2A2A" }
+  }
+}

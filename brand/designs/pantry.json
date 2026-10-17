@@ -1,0 +1,21 @@
+{
+  "name": "Pantry",
+  "blurb": "Warm cookbook editorial. Cream paper, burnt terracotta, a characterful serif. Closest to the reference deck.",
+  "brand": { "handle": "@yourhandle", "site": "" },
+  "canvas": { "width": 1080, "height": 1350, "scale": 2, "margin": 96, "format": "jpeg", "quality": 92 },
+  "type": {
+    "display_family": "Fraunces", "display_weight": 900,
+    "body_family": "Archivo",
+    "tracking_display": "-0.022em", "tracking_label": "0.18em",
+    "leading_display": 0.96, "leading_body": 1.5
+  },
+  "scale": {
+    "cover_max": 128, "cover_min": 72, "headline_max": 88, "headline_min": 50,
+    "stat_max": 290, "stat_min": 140, "body": 36, "body_small": 31, "label": 21, "footer": 20
+  },
+  "active_theme": "cream",
+  "themes": {
+    "cream":  { "bg": "#F4EFE6", "surface": "#EAE2D5", "ink": "#241C16", "ink_soft": "#7A6A5C", "accent": "#BF5A36", "rule": "#DCD2C2" },
+    "cocoa":  { "bg": "#241C16", "surface": "#2F251D", "ink": "#F4EFE6", "ink_soft": "#A8988A", "accent": "#E07A4F", "rule": "#3D3128" }
+  }
+}

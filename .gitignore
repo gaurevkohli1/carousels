@@ -1,6 +1,7 @@
 # Generated assets: rendered slides and review sheets are reproducible from
 # plan.json + tokens.json, so they never enter git.
 drops/*/slides/
+drops/design-preview/*/
 !drops/*/slides/render.json
 
 # Vendored fonts — reproduce with: python3 brand/fonts/fetch.py

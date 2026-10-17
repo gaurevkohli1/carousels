@@ -5,13 +5,18 @@
 <title>slide</title>
 <style>
   /* Font files are vendored under brand/fonts/ — see brand/fonts/fetch.py.
-     Local files mean the render is byte-identical on any machine and works offline. */
-  @font-face{font-family:Display;src:url(../../../brand/fonts/BricolageGrotesque-700.ttf) format("truetype");font-weight:700}
-  @font-face{font-family:Display;src:url(../../../brand/fonts/BricolageGrotesque-800.ttf) format("truetype");font-weight:800}
-  @font-face{font-family:Body;src:url(../../../brand/fonts/Archivo-400.ttf) format("truetype");font-weight:400}
-  @font-face{font-family:Body;src:url(../../../brand/fonts/Archivo-500.ttf) format("truetype");font-weight:500}
-  @font-face{font-family:Body;src:url(../../../brand/fonts/Archivo-600.ttf) format("truetype");font-weight:600}
-  @font-face{font-family:Body;src:url(../../../brand/fonts/Archivo-700.ttf) format("truetype");font-weight:700}
+     Local files mean the render is byte-identical on any machine and works offline.
+     Every family is declared here; brand/designs/<name>.json picks which two are used. */
+  @font-face{font-family:Bricolage;src:url(../../../brand/fonts/BricolageGrotesque-700.ttf) format("truetype");font-weight:700}
+  @font-face{font-family:Bricolage;src:url(../../../brand/fonts/BricolageGrotesque-800.ttf) format("truetype");font-weight:800}
+  @font-face{font-family:Fraunces;src:url(../../../brand/fonts/Fraunces-600.ttf) format("truetype");font-weight:600}
+  @font-face{font-family:Fraunces;src:url(../../../brand/fonts/Fraunces-900.ttf) format("truetype");font-weight:900}
+  @font-face{font-family:InstrumentSerif;src:url(../../../brand/fonts/InstrumentSerif-400.ttf) format("truetype");font-weight:400}
+  @font-face{font-family:InstrumentSerif;src:url(../../../brand/fonts/InstrumentSerif-400i.ttf) format("truetype");font-weight:400;font-style:italic}
+  @font-face{font-family:Archivo;src:url(../../../brand/fonts/Archivo-400.ttf) format("truetype");font-weight:400}
+  @font-face{font-family:Archivo;src:url(../../../brand/fonts/Archivo-500.ttf) format("truetype");font-weight:500}
+  @font-face{font-family:Archivo;src:url(../../../brand/fonts/Archivo-600.ttf) format("truetype");font-weight:600}
+  @font-face{font-family:Archivo;src:url(../../../brand/fonts/Archivo-700.ttf) format("truetype");font-weight:700}
 
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{background:#000}
@@ -19,7 +24,7 @@
   #slide{
     position:relative;overflow:hidden;
     background:var(--bg);color:var(--ink);
-    font-family:Body,system-ui,sans-serif;
+    font-family:var(--f-body),system-ui,sans-serif;
     display:flex;flex-direction:column;
   }
 
@@ -35,11 +40,11 @@
   .label{font-weight:600;text-transform:uppercase;color:var(--accent)}
   .rule{height:2px;background:var(--accent);flex:0 0 auto}
 
-  h1{font-family:Display,sans-serif;font-weight:800;text-wrap:balance}
-  h2{font-family:Display,sans-serif;font-weight:700;text-wrap:balance}
-  .stat{font-family:Display,sans-serif;font-weight:800;color:var(--accent);line-height:.86;
+  h1{font-family:var(--f-display),Georgia,serif;font-weight:var(--w-display);text-wrap:balance}
+  h2{font-family:var(--f-display),Georgia,serif;font-weight:var(--w-display);text-wrap:balance}
+  .stat{font-family:var(--f-display),Georgia,serif;font-weight:var(--w-display);color:var(--accent);line-height:.86;
         font-variant-numeric:tabular-nums}
-  .quote{font-family:Display,sans-serif;font-weight:700;text-wrap:balance}
+  .quote{font-family:var(--f-display),Georgia,serif;font-weight:var(--w-display);text-wrap:balance}
   .quote::before{content:"\201C";color:var(--accent)}
   .quote::after{content:"\201D";color:var(--accent)}
 
@@ -48,10 +53,10 @@
 
   ol.items{list-style:none;display:flex;flex-direction:column}
   ol.items li{display:grid;grid-template-columns:auto 1fr;align-items:baseline}
-  ol.items .n{font-family:Display,sans-serif;font-weight:700;color:var(--accent);
+  ol.items .n{font-family:var(--f-display),Georgia,serif;font-weight:var(--w-display);color:var(--accent);
               font-variant-numeric:tabular-nums}
 
-  .idx{font-family:Display,sans-serif;font-weight:800;color:var(--accent);
+  .idx{font-family:var(--f-display),Georgia,serif;font-weight:var(--w-display);color:var(--accent);
        line-height:.8;font-variant-numeric:tabular-nums}
 
   .cta{display:inline-flex;align-items:center;border:2px solid var(--accent);
@@ -121,6 +126,10 @@ function renderSlide(slide, ctx){
   root.style.width  = px(CANVAS.width);
   root.style.height = px(CANVAS.height);
   root.style.padding = px(M);
+
+  root.style.setProperty("--f-display", TY.display_family);
+  root.style.setProperty("--f-body", TY.body_family);
+  root.style.setProperty("--w-display", TY.display_weight);
 
   const theme = applyTheme(slide.theme || T.active_theme);
 
