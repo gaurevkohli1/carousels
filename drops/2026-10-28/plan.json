@@ -1,0 +1,33 @@
+{
+  "topic": "roast vegetables steaming instead of browning",
+  "pillar": "food",
+  "hook_pattern": "mistake",
+  "caption": "If your roast vegetables come out pale and a bit sad, nothing is wrong with your oven. They're steaming in their own water — and four small things fix it.\n\nSave this before Sunday.",
+  "caption_fb": "If your roast vegetables come out pale and soft, they're steaming in their own water rather than roasting. Four fixes.",
+  "first_comment": "Crowding the tray is the one everybody does. Two trays, always.",
+  "hashtags": ["#homecooking", "#cookingtips", "#roastvegetables", "#foodie"],
+  "slides": [
+    { "type": "cover", "kicker": "Food · Technique",
+      "headline": "Your vegetables are steaming, not roasting.",
+      "subhead": "Pale, soft, a little watery. The oven is fine — the *tray* is the problem.",
+      "alt": "Cover: your vegetables are steaming, not roasting" },
+    { "type": "point", "number": 1, "headline": "The tray is crowded",
+      "body": "Vegetables release water as they heat. Packed together, that water has nowhere to go, so they sit and *poach* in it. Use two trays.",
+      "alt": "A crowded tray traps moisture and poaches the vegetables" },
+    { "type": "stat", "kicker": "Run it hotter", "value": "220°",
+      "headline": "Browning needs real heat",
+      "body": "Below about 200°C the surface never dries fast enough to colour. Hot oven, single layer, no lid, no foil.",
+      "alt": "Roast at 220 degrees celsius for proper browning" },
+    { "type": "point", "number": 2, "headline": "You put them in wet",
+      "body": "Water on the surface has to boil off before anything can brown. Dry them properly after washing — *then* oil them.",
+      "alt": "Wet vegetables must dry before they can brown" },
+    { "type": "list", "theme": "cocoa", "headline": "Four fixes, in order",
+      "items": ["Dry them before the oil goes on", "One layer, two trays if needed", "220°C, no foil", "Leave them alone for 20 minutes"],
+      "alt": "Four fixes listed in order" },
+    { "type": "quote", "quote": "Every time you turn them early, you trade a crust for a stir.", "attribution": "Fix number four",
+      "alt": "Pull quote about turning vegetables too early" },
+    { "type": "cta", "kicker": "More like this", "headline": "Cook it better on Sunday",
+      "body": "Technique breakdowns three times a week, food and fashion both.",
+      "action": "Follow for more", "alt": "Follow for more technique breakdowns" }
+  ]
+}

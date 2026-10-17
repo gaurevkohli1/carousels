@@ -1,21 +1,56 @@
 {
   "name": "After Hours",
   "blurb": "Dark gallery. Warm black, brass accent, a high-contrast fashion serif. Built for night shots and moody food.",
-  "brand": { "handle": "@yourhandle", "site": "" },
-  "canvas": { "width": 1080, "height": 1350, "scale": 2, "margin": 100, "format": "jpeg", "quality": 92 },
+  "brand": {
+    "handle": "@techairevolution",
+    "site": ""
+  },
+  "canvas": {
+    "width": 1080,
+    "height": 1350,
+    "scale": 2,
+    "margin": 100,
+    "format": "jpeg",
+    "quality": 92
+  },
   "type": {
-    "display_family": "InstrumentSerif", "display_weight": 400,
+    "display_family": "InstrumentSerif",
+    "display_weight": 400,
     "body_family": "Archivo",
-    "tracking_display": "-0.012em", "tracking_label": "0.2em",
-    "leading_display": 0.94, "leading_body": 1.55
+    "tracking_display": "-0.012em",
+    "tracking_label": "0.2em",
+    "leading_display": 0.94,
+    "leading_body": 1.55
   },
   "scale": {
-    "cover_max": 146, "cover_min": 80, "headline_max": 104, "headline_min": 56,
-    "stat_max": 320, "stat_min": 150, "body": 35, "body_small": 30, "label": 20, "footer": 19
+    "cover_max": 146,
+    "cover_min": 80,
+    "headline_max": 104,
+    "headline_min": 56,
+    "stat_max": 320,
+    "stat_min": 150,
+    "body": 35,
+    "body_small": 30,
+    "label": 20,
+    "footer": 19
   },
   "active_theme": "night",
   "themes": {
-    "night": { "bg": "#15120F", "surface": "#1E1A15", "ink": "#F2EDE4", "ink_soft": "#938A7C", "accent": "#C9A227", "rule": "#2C2720" },
-    "linen": { "bg": "#EFEAE1", "surface": "#E3DCD0", "ink": "#15120F", "ink_soft": "#6E665B", "accent": "#9A7A14", "rule": "#D5CCBE" }
+    "night": {
+      "bg": "#15120F",
+      "surface": "#1E1A15",
+      "ink": "#F2EDE4",
+      "ink_soft": "#938A7C",
+      "accent": "#C9A227",
+      "rule": "#2C2720"
+    },
+    "linen": {
+      "bg": "#EFEAE1",
+      "surface": "#E3DCD0",
+      "ink": "#15120F",
+      "ink_soft": "#6E665B",
+      "accent": "#9A7A14",
+      "rule": "#D5CCBE"
+    }
   }
 }

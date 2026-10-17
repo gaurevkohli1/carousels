@@ -1,0 +1,33 @@
+{
+  "topic": "why home food photos look flat",
+  "pillar": "food",
+  "hook_pattern": "contrarian",
+  "caption": "Restaurants aren't using better cameras than you. They're using worse light, from a better direction.\n\nFive fixes, none of which cost anything. Save this for your next dinner.",
+  "caption_fb": "Restaurants aren't using better cameras than you — they're using worse light, from a better direction. Five fixes, none of which cost anything.",
+  "first_comment": "The 45° one changes the most for the least effort. Try it tonight.",
+  "hashtags": ["#foodphotography", "#foodstyling", "#homecooking", "#foodie"],
+  "slides": [
+    { "type": "cover", "kicker": "Food · Craft",
+      "headline": "Your food looks flat. Theirs doesn't.",
+      "subhead": "It isn't the camera. It's *where the light is coming from* — and it's free to fix.",
+      "alt": "Cover: your food looks flat and theirs doesn't" },
+    { "type": "point", "number": 1, "headline": "You lit it from the front",
+      "body": "Front light fills every shadow, and shadow is the only thing that shows *texture*. Move the plate so the window is behind it, not behind you.",
+      "alt": "Front light removes the shadows that show texture" },
+    { "type": "stat", "kicker": "The one number", "value": "45°",
+      "headline": "Turn the plate, not the camera",
+      "body": "Three-quarter back light rakes across the surface and brings back the grain, the crumb and the gloss.",
+      "alt": "Shoot at 45 degrees to the light source" },
+    { "type": "point", "number": 2, "headline": "Everything is the same height",
+      "body": "A flat plate photographs flat. Build one thing *taller* than the rest — a torn edge, a stacked slice, a spoon resting high.",
+      "alt": "Build height into the plate" },
+    { "type": "list", "theme": "cocoa", "headline": "Five fixes, in order",
+      "items": ["Put the window behind the plate", "Turn 45° off the light", "Build one thing taller", "Wipe the rim, always", "Shoot before it stops steaming"],
+      "alt": "Five fixes listed in order" },
+    { "type": "quote", "quote": "Gloss is just a reflection you remembered to aim.", "attribution": "Fix number four",
+      "alt": "Pull quote about gloss and reflections" },
+    { "type": "cta", "kicker": "More like this", "headline": "Food, fashion, and what's next",
+      "body": "Craft breakdowns three times a week. No gear lists, no sponsorships.",
+      "action": "Follow for more", "alt": "Follow for more craft breakdowns" }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "name": "Pantry Bold",
+  "blurb": "The chosen direction: Pantry's warm cream and terracotta, carrying Newsstand's heavy grotesque headline. Warm enough for food, loud enough for trends.",
+  "brand": {
+    "handle": "@techairevolution",
+    "site": ""
+  },
+  "canvas": {
+    "width": 1080,
+    "height": 1350,
+    "scale": 2,
+    "margin": 92,
+    "format": "jpeg",
+    "quality": 92
+  },
+  "type": {
+    "display_family": "Bricolage",
+    "display_weight": 800,
+    "body_family": "Archivo",
+    "tracking_display": "-0.034em",
+    "tracking_label": "0.17em",
+    "leading_display": 0.92,
+    "leading_body": 1.5
+  },
+  "scale": {
+    "cover_max": 138,
+    "cover_min": 74,
+    "headline_max": 96,
+    "headline_min": 52,
+    "stat_max": 300,
+    "stat_min": 148,
+    "body": 37,
+    "body_small": 32,
+    "label": 22,
+    "footer": 20
+  },
+  "active_theme": "cream",
+  "themes": {
+    "cream": {
+      "bg": "#F4EFE6",
+      "surface": "#EAE2D5",
+      "ink": "#241C16",
+      "ink_soft": "#7A6A5C",
+      "accent": "#BF5A36",
+      "rule": "#DCD2C2"
+    },
+    "cocoa": {
+      "bg": "#241C16",
+      "surface": "#2F251D",
+      "ink": "#F4EFE6",
+      "ink_soft": "#A8988A",
+      "accent": "#E8805A",
+      "rule": "#3D3128"
+    }
+  }
+}

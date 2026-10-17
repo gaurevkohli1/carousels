@@ -1,0 +1,33 @@
+{
+  "topic": "spotting quality clothing in seconds",
+  "pillar": "fashion",
+  "hook_pattern": "numbered",
+  "caption": "You can tell what a garment is worth before you look at the label. Four checks, about ten seconds, and they work in any shop at any price.\n\nSave it for the next time you're out.",
+  "caption_fb": "You can tell what a garment is worth before you look at the label. Four checks, about ten seconds, at any price point.",
+  "first_comment": "The seam allowance is the one nobody checks — and it's the one that decides whether it survives being taken in.",
+  "hashtags": ["#fashion", "#styletips", "#slowfashion", "#wardrobe"],
+  "slides": [
+    { "type": "cover", "kicker": "Fashion · Craft",
+      "headline": "Judge it before you see the price.",
+      "subhead": "Four checks, ten seconds. They work in a charity shop and they work at full price.",
+      "alt": "Cover: judge a garment before you see the price" },
+    { "type": "point", "number": 1, "headline": "Turn it inside out first",
+      "body": "The outside is styled. The inside is *built*. Finished seams, bound edges and clean overlocking are where the money actually went.",
+      "alt": "Turn the garment inside out to see construction" },
+    { "type": "stat", "kicker": "The giveaway", "value": "1.5cm",
+      "headline": "Seam allowance is the tell",
+      "body": "A generous allowance means it can be let out or taken in. A narrow one means the fabric was rationed and the fit is final.",
+      "alt": "A 1.5cm seam allowance indicates quality construction" },
+    { "type": "point", "number": 2, "headline": "Follow the pattern across a seam",
+      "body": "On a stripe or check, matched lines across the join take extra fabric and extra care. A broken pattern is a shortcut you can *see*.",
+      "alt": "Check whether patterns match across seams" },
+    { "type": "list", "theme": "cocoa", "headline": "The four checks",
+      "items": ["Inside out — are the seams finished?", "Seam allowance — is there room to alter?", "Pattern — does it match at the join?", "Hold it to the light — can you see through it?"],
+      "alt": "Four quality checks listed in order" },
+    { "type": "quote", "quote": "Fabric weight is the one thing a photograph can never tell you.", "attribution": "Check number four",
+      "alt": "Pull quote about fabric weight and photographs" },
+    { "type": "cta", "kicker": "More like this", "headline": "Buy less, check harder",
+      "body": "Food and fashion, three breakdowns a week. No hauls, no affiliate links.",
+      "action": "Follow for more", "alt": "Follow for more fashion breakdowns" }
+  ]
+}
