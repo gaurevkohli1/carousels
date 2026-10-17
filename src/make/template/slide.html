@@ -139,8 +139,11 @@ function renderSlide(slide, ctx){
   if (slide.art){
     art.style.backgroundImage = "url('" + slide.art + "')";
     art.style.opacity = 1;
+    // Dark at the ends where the type sits, open through the middle so the
+    // photograph is actually visible rather than buried under a flat wash.
     scrim.style.background =
-      "linear-gradient(180deg, " + theme.bg + "CC 0%, " + theme.bg + "F2 100%)";
+      "linear-gradient(180deg, " + theme.bg + "E8 0%, " + theme.bg + "70 38%, "
+      + theme.bg + "70 58%, " + theme.bg + "F2 100%)";
     scrim.style.opacity = 1;
   } else {
     art.style.opacity = 0; scrim.style.opacity = 0;

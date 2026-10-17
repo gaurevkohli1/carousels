@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1350" viewBox="0 0 1080 1350">
+  <defs>
+    <radialGradient id="key" cx="52%" cy="62%" r="62%">
+      <stop offset="0%"  stop-color="#8A4A22"/>
+      <stop offset="45%" stop-color="#4A2A16"/>
+      <stop offset="100%" stop-color="#160F0A"/>
+    </radialGradient>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" seed="7"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.16"/></feComponentTransfer>
+    </filter>
+  </defs>
+  <rect width="1080" height="1350" fill="url(#key)"/>
+  <ellipse cx="560" cy="880" rx="300" ry="150" fill="#C06A33" opacity="0.30"/>
+  <ellipse cx="560" cy="880" rx="170" ry="80"  fill="#E89A52" opacity="0.22"/>
+  <rect width="1080" height="1350" filter="url(#grain)"/>
+</svg>
